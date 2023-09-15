@@ -1,10 +1,11 @@
+{% load static %}
 <!-- HEADER -->
 	<header>
 		<!-- top Header -->
 		<div id="top-header">
 			<div class="container">
 				<div class="pull-left">
-					<span>Welcome to E-shop!</span>
+					<span> Welcome to {{ setting.company }}! </span>
 				</div>
 				<div class="pull-right">
 					<ul class="header-top-links">
@@ -39,8 +40,8 @@
 				<div class="pull-left">
 					<!-- Logo -->
 					<div class="header-logo">
-						<a class="logo" href="#">
-							<img src="./img/logo.png" alt="">
+						<a class="logo" href="{% url 'index' %}">
+							<img src="{{ setting.icon.url }}" alt="">
 						</a>
 					</div>
 					<!-- /Logo -->

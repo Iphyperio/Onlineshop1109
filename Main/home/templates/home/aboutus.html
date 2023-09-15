@@ -1,0 +1,33 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% block title %} 9 Bit - about{% endblock %}
+
+{% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
+
+{% block content %}
+<!-- BREADCRUMB -->
+	<div id="breadcrumb">
+		<div class="container">
+			<ul class="breadcrumb">
+				<li><a href="{% url 'index' %}">Home</a></li>
+				<li class="active">About us</li>
+			</ul>
+		</div>
+	</div>
+	<!-- /BREADCRUMB -->
+
+	<!-- section -->
+	<div class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				{{ setting.aboutus|safe }}
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /section -->
+{% endblock %}
+{% block foot %}{% include 'home/footer.html' %}{% endblock %}

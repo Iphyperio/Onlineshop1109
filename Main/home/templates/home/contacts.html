@@ -1,0 +1,72 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% block title %} 9 Bit - Contacts {% endblock %}
+
+{% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
+
+{% block content %}
+<!-- BREADCRUMB -->
+<div id="breadcrumb">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li class="active">Contacts</li>
+        </ul>
+    </div>
+</div>
+<!-- /BREADCRUMB -->
+
+<!-- section -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <form id="checkout-form" class="clearfix" method="post">
+                {% csrf_token %}
+                <div class="col-md-4">
+                    <div class="message-form">
+                        <div class="section-title">
+                            <h3 class="title">Напишите нам</h3>
+                        </div>
+                        <div class="form-group">
+                            <input class="input" type="text" name="name" placeholder="Ваше имя">
+                        </div>
+                        <div class="form-group">
+                            <input class="input" type="email" name="email" placeholder="Ваш Email">
+                        </div>
+                        <div class="form-group">
+                            <input class="input" type="text" name="subject" placeholder="Тема сообщения">
+                        </div>
+                        <div class="form-group">
+                            <input class="input" type="text" name="message" placeholder="Текст сообщения">
+                        </div>
+                        {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-success" role="alert">
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="form-group">
+                            <button class="primary-btn" type="submit">Отправить</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="section-title">
+                        <h3 class="title">Контактная информация</h3>
+                    </div>
+                    <div class="caption">
+                        {{ setting.contact|safe }}
+                    </div>
+                </div>
+                <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+</div>
+    <!-- /section -->
+    {% endblock %}
+    {% block foot %}{% include 'home/footer.html' %}{% endblock %}
