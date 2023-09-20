@@ -1,6 +1,6 @@
 {% extends 'home/layout.html' %}
 {% load static %}
-{% block title %} 9 Bit - about{% endblock %}
+{% block title %} Search: {{ query }}{% endblock %}
 
 {% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
 
@@ -10,7 +10,7 @@
 		<div class="container">
 			<ul class="breadcrumb">
 				<li><a href="{% url 'index' %}">Home</a></li>
-				<li class="active">About us</li>
+				<li class="active"> Search: {{ query }}</li>
 			</ul>
 		</div>
 	</div>
@@ -149,7 +149,7 @@
 						<div class="col-md-12">
 						<div class="order-summary clearfix">
 							<div class="section-title">
-								<h3 class="title">Product list</h3>
+								<h3 class="title">Search result for: {{ query }}</h3>
 							</div>
 							<table class="shopping-cart-table table">
 								<thead>
