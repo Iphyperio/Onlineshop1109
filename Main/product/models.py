@@ -4,7 +4,7 @@ from ckeditor.fields import RichTextField
 from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey
 from django.urls import reverse
-
+from django.contrib.auth.models import User
 class Category(MPTTModel):
     # Кортеж для панели администратора Для выбора статуса
     STATUS = (
@@ -82,3 +82,23 @@ class Images(models.Model):
             return mark_safe(f'<img src="{self.image.url}" width="auto" height="50"/>')
         else:
             return 'no image'
+
+#from django.contrib.auth.models import User
+class Comment(models.Model):
+    STATUS = (
+        ('New', 'New'),
+        ('True', 'True'),
+        ('False', 'False'),
+    )
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=50, blank = True)
+    text = models.CharField(max_length=50, blank = True)
+    rate = models.IntegerField(default = 5)
+    ip = models.CharField(max_length=20, blank = True)
+    status = models.CharField(max_length=20, choices=STATUS, default='New')
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.subject

@@ -10,13 +10,13 @@
 					<div class="footer">
 						<!-- footer logo -->
 						<div class="footer-logo">
-							<a class="logo" href="#">
-		            <img src="{% static '' %}./img/logo.png" alt="">
-		          </a>
+
+						<a  href="{% url 'index' %}">
+							<img src="{{ setting.icon.url }}" alt="" style="height:150px; width:auto;">
+						</a>
+
 						</div>
 						<!-- /footer logo -->
-
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna</p>
 
 						<!-- footer social -->
 						<ul class="footer-social">

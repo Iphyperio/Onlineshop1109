@@ -64,8 +64,7 @@ def search(request):
 import json
 
 def search_auto(request):
-    print('Сработал Auto_search')
-    print(request.headers)
+
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         q = request.GET.get('term', '')
         products = Product.objects.filter(title__icontains=q)

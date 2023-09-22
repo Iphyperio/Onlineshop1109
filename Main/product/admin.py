@@ -27,13 +27,17 @@ class ImagesAdmin(admin.ModelAdmin):
     list_filter = ['product','title']
     readonly_fields = ('image_tag',)
 
-
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['product','subject','rate','status']
+    list_filter = ['product','subject','rate','status']
+    readonly_fields = ['product','text','ip','user','subject','rate']
 
 admin.site.register(Category, DraggableMPTTAdmin,
                     list_display=('tree_actions','indented_title','status'),
                     list_filter=( 'title','status'), prepopulated_fields = {'slug': ('title',)})
 
 admin.site.register(Images, ImagesAdmin)
+admin.site.register(Comment, CommentAdmin)
 # admin.site.register(Category,CategoryAdmin)
 admin.site.register(Product,ProductAdmin)
 
