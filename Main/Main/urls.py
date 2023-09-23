@@ -22,6 +22,7 @@ from home import views
 urlpatterns = [
     path('', include('home.urls')),
     path('category/',include('product.urls')),
+    path('order/', include('order.urls')),
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('search/', views.search, name='search'),

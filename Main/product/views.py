@@ -11,7 +11,7 @@ def category_products(request,id,slug):
     setting = Setting.objects.filter(status=True).first()
     category = Category.objects.all()
     products = Product.objects.filter(category_id=id)
-    print(products)
+
     context = {'setting': setting, 'category': category,
                'products': products }
 
@@ -23,9 +23,10 @@ def product_detail(request,id,slug):
 
     product = Product.objects.filter(id=id)[0]
     images = Images.objects.filter(product_id=id)
-
+    comments = Comment.objects.filter(product_id=id)
     context = {'setting': setting, 'category': category,
                'product': product, 'images':images,
+               'comments':comments,
                }
 
     return render(request,'product/product_detail.html',context)

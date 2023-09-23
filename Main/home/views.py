@@ -7,9 +7,11 @@ def index(request):
     setting = Setting.objects.filter(status=True).first()
     category = Category.objects.all()
     product_slider = Product.objects.order_by('id').all()[:3]
-
+    special_offer = Product.objects.order_by('id').all()[:4]
     context = {'setting': setting, 'category': category,
-               'product_slider':product_slider}
+               'product_slider':product_slider,
+               'special_offer':special_offer,
+               }
 
     return render(request,'home/index.html',context)
 

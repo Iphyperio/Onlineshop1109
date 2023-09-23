@@ -1,7 +1,11 @@
 {% extends 'home/layout.html' %}
 {% load static %}
-{% block title %} 9 Bit - about{% endblock %}
-
+{% block title %} 9 Bit - 			{% for product in products %}
+										{% if forloop.counter < 2 %}
+											{{ product.category }}
+										{% endif %}
+									{% endfor %}
+{% endblock %}
 {% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
 
 {% block content %}
@@ -10,7 +14,12 @@
 		<div class="container">
 			<ul class="breadcrumb">
 				<li><a href="{% url 'index' %}">Home</a></li>
-				<li class="active">About us</li>
+				<li class="active"> {% for product in products %}
+										{% if forloop.counter < 2 %}
+											{{ product.category }}
+										{% endif %}
+									{% endfor %}
+					</li>
 			</ul>
 		</div>
 	</div>

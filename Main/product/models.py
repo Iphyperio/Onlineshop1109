@@ -5,6 +5,9 @@ from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.db.models import Avg, Count
+
+
 class Category(MPTTModel):
     # Кортеж для панели администратора Для выбора статуса
     STATUS = (
@@ -68,6 +71,14 @@ class Product(models.Model):
 
     def get_absoulte_url(self):
         return reverse('product_detail', kwargs={'slug':self.slug})
+    #from django.db.models import Avg, Count
+    def average_rating(self):
+        av_rate = Comment.objects.filter(product=self, status=True).aggregate(average=Avg('rate'))
+        av_rate = av_rate['average']
+        if av_rate is not None:
+            return round(float(av_rate),1)
+        else:
+            return 0.0
 
 class Images(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
