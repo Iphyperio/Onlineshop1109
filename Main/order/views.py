@@ -4,6 +4,7 @@ from django.contrib import messages
 from .models import ShopCart
 from .forms import ShopCartForm
 from django.contrib.auth.decorators import login_required
+from home.models import Setting
 
 def index(request):
     return HttpResponse('Страница Order')
@@ -47,3 +48,23 @@ def addtoshopcart(request,id):
             data.save()
             messages.success(request,'Товар добавлен в корзину')
         return HttpResponseRedirect(url)
+
+
+from product.models import Category, Product
+def shopcart(request):
+    print('Shopcart сработал !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    setting = Setting.objects.filter(status=True).first()
+    category = Category.objects.all()
+    current_shopcart = ShopCart.objects.filter(user_id = request.user.id)
+    total = 0
+    quantity = 0
+    for sc in current_shopcart:
+        total += sc.product.price * sc.quantity
+        quantity += sc.quantity
+
+    context = {'setting': setting, 'category': category,
+               'shopcart': current_shopcart,
+               'total':int(total), 'quantity':quantity,
+               }
+
+    return render(request,'order/shopcart.html',context)
