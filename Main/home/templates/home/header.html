@@ -94,13 +94,18 @@
 					<ul class="header-btns">
 						<!-- Account -->
 						<li class="header-account dropdown default-dropdown">
-							<div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="true">
-								<div class="header-btns-icon">
-									<i class="fa fa-user-o"></i>
+							{% if user.id is not None %}
+								<div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="true">
+									<div class="header-btns-icon">
+	<!--									<i class="fa fa-user-o"></i>-->
+											<img src="{{ user.userprofile.image.url }}" style="height:40px;">
+									</div>
+									<strong class="text-uppercase"> {{ user.username }} profile <i class="fa fa-caret-down"></i></strong><br>
 								</div>
-								<strong class="text-uppercase">My Account <i class="fa fa-caret-down"></i></strong>
-							</div>
-							<a href="#" class="text-uppercase">Login</a> / <a href="#" class="text-uppercase">Join</a>
+								<a href="{% url 'logout' %}" class="text-uppercase">Logout</a>
+							{% else %}
+								<a href="{% url 'login' %}" class="text-uppercase">Login</a> / <a href="{% url 'register' %}" class="text-uppercase">Join</a>
+							{% endif %}
 							<ul class="custom-menu">
 								<li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
 								<li><a href="#"><i class="fa fa-heart-o"></i> My Wishlist</a></li>

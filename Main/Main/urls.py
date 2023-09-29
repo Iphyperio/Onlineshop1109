@@ -24,6 +24,7 @@ urlpatterns = [
     path('category/',include('product.urls')),
     path('order/', include('order.urls')),
     path('admin/', admin.site.urls),
+    path('user/', include('users.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('search/', views.search, name='search'),
     path('search/search_auto/', views.search_auto, name='search_auto'),

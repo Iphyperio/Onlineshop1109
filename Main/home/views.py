@@ -3,14 +3,25 @@ from .models import *
 from django.contrib import messages
 from product.models import Category, Product
 
+from order.models import ShopCart
 def index(request):
     setting = Setting.objects.filter(status=True).first()
     category = Category.objects.all()
+    current_shopcart = ShopCart.objects.filter(user_id = request.user.id)
+    total = 0
+    quantity = 0
+    for sc in current_shopcart:
+        total += sc.product.price * sc.quantity
+        quantity += sc.quantity
+
     product_slider = Product.objects.order_by('id').all()[:3]
     special_offer = Product.objects.order_by('id').all()[:4]
+
+
     context = {'setting': setting, 'category': category,
-               'product_slider':product_slider,
-               'special_offer':special_offer,
+               'total':int(total), 'quantity':quantity,
+               'product_slider': product_slider,
+               'special_offer': special_offer,
                }
 
     return render(request,'home/index.html',context)
@@ -19,6 +30,14 @@ def index(request):
 def contacts(request):
     setting = Setting.objects.filter(status=True).first()
     category = Category.objects.all()
+    current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
+    total = 0
+    quantity = 0
+    for sc in current_shopcart:
+        total += sc.product.price * sc.quantity
+        quantity += sc.quantity
+
+
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -34,15 +53,25 @@ def contacts(request):
 
     form = ContactForm
     context = {'setting':setting, 'form':form,
-               'category':category}
+               'category':category,
+               'total': int(total), 'quantity': quantity,
+               }
 
     return render(request,'home/contacts.html', context)
 
 def aboutus(request):
     setting = Setting.objects.filter(status=True).first()
     category = Category.objects.all()
+    current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
+    total = 0
+    quantity = 0
+    for sc in current_shopcart:
+        total += sc.product.price * sc.quantity
+        quantity += sc.quantity
 
-    context = {'setting':setting, 'category':category}
+    context = {'setting':setting, 'category':category,
+               'total': int(total), 'quantity': quantity,
+               }
 
     return render(request,'home/aboutus.html',context)
 
@@ -50,6 +79,13 @@ def aboutus(request):
 def search(request):
     setting = Setting.objects.filter(status=True).first()
     category = Category.objects.all()
+    current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
+    total = 0
+    quantity = 0
+    for sc in current_shopcart:
+        total += sc.product.price * sc.quantity
+        quantity += sc.quantity
+
     if request.method == 'POST':
         query = request.POST['query']
         catid = int(request.POST['cat'][0])
@@ -59,7 +95,9 @@ def search(request):
             products = Product.objects.filter(title__icontains=query,category_id=catid)
 
     context = {'setting': setting, 'category': category,
-               'products': products,'query':query}
+               'products': products,'query':query,
+               'total': int(total), 'quantity': quantity,
+               }
     return render(request,'product/search_results.html',context)
 
 
