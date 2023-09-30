@@ -95,25 +95,17 @@
 						<!-- Account -->
 						<li class="header-account dropdown default-dropdown">
 							{% if user.id is not None %}
-								<div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="true">
+								<div class="dropdown-toggle">
 									<div class="header-btns-icon">
 	<!--									<i class="fa fa-user-o"></i>-->
-											<img src="{{ user.userprofile.image.url }}" style="height:40px;">
+											<a href="{% url 'user_profile' %}"><img src="{{ user.userprofile.image.url }}" style="height:40px;"></a>
 									</div>
-									<strong class="text-uppercase"> {{ user.username }} profile <i class="fa fa-caret-down"></i></strong><br>
+									<a href="{% url 'user_profile' %}"><strong class="text-uppercase"> {{ user.username }} profile</strong></a><br>
 								</div>
 								<a href="{% url 'logout' %}" class="text-uppercase">Logout</a>
 							{% else %}
 								<a href="{% url 'login' %}" class="text-uppercase">Login</a> / <a href="{% url 'register' %}" class="text-uppercase">Join</a>
 							{% endif %}
-							<ul class="custom-menu">
-								<li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
-								<li><a href="#"><i class="fa fa-heart-o"></i> My Wishlist</a></li>
-								<li><a href="#"><i class="fa fa-exchange"></i> Compare</a></li>
-								<li><a href="#"><i class="fa fa-check"></i> Checkout</a></li>
-								<li><a href="#"><i class="fa fa-unlock-alt"></i> Login</a></li>
-								<li><a href="#"><i class="fa fa-user-plus"></i> Create An Account</a></li>
-							</ul>
 						</li>
 						<!-- /Account -->
 

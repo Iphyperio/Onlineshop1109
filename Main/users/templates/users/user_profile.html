@@ -1,36 +1,85 @@
 {% extends 'home/layout.html' %}
 {% load static %}
-{% block title %} 9 Bit - about{% endblock %}
+{% block title %} 9 Bit - user profile{% endblock %}
 
 {% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
 
 {% block content %}
 <!-- BREADCRUMB -->
-	<div id="breadcrumb">
-		<div class="container">
-			<ul class="breadcrumb">
-				<li><a href="{% url 'index' %}">Home</a></li>
-				<li class="active">About us</li>
-			</ul>
-		</div>
-	</div>
-	<!-- /BREADCRUMB -->
+<div id="breadcrumb">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li class="active">Profile</li>
+        </ul>
+    </div>
+</div>
+<!-- /BREADCRUMB -->
 
-	<!-- section -->
-	<div class="section">
-		<!-- container -->
-		<div class="container">
-			<!-- row -->
-			<div class="col-md-3">
-				{% include 'users/user_panel.html' %}
-			</div>
-			<div class="col-md-9">
-				<h1> Тут будет информация профиля </h1>
-			</div>
-			<!-- /row -->
-		</div>
-		<!-- /container -->
-	</div>
-	<!-- /section -->
+<!-- section -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="col-md-3">
+            {% include 'users/user_panel.html' %}
+        </div>
+        <div class="col-md-9">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+		    {% endif %}
+            <div class="section-title">
+                <h3 class="title"> User profile</h3>
+            </div>
+            <table class="shopping-cart-table table">
+                <tbody>
+                <tr>
+                    <th class="text-left">
+                        <a href="{% url 'update_profile' %}" class="primary-btn"> Update profile</a>
+                        <a href="{% url 'update_password' %}" class="primary-btn"> Update password</a>
+                    </th>
+                    <td>
+                        <img src="{{ profile.image.url }}"
+                             style="border-radius: 45px; height:200px; width:auto; margin-left:90px;">
+                    </td>
+                </tr>
+                <tr>
+                    <th class="text-left"> Name Surname:</th>
+                    <td class="text-left"> {{ user.first_name}} {{ user.last_name }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left"> Email:</th>
+                    <td class="text-left"> {{ user.email}}</td>
+                </tr>
+                <tr>
+                    <th class="text-left"> Phone:</th>
+                    <td class="text-left"> {{ profile.phone }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left"> Address:</th>
+                    <td class="text-left"> {{ profile.address }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left"> City:</th>
+                    <td class="text-left"> {{ profile.city }}</td>
+                </tr>
+                <tr>
+                    <th class="text-left"> Country:</th>
+                    <td class="text-left"> {{ profile.country }}</td>
+                </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /section -->
 {% endblock %}
 {% block foot %}{% include 'home/footer.html' %}{% endblock %}

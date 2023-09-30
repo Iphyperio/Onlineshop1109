@@ -15,6 +15,10 @@ def index(request):
     current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
     total = 0
     quantity = 0
+
+    current_user = request.user
+    profile = UserProfile.objects.get(user_id=current_user.id)
+
     if request.user != 'AnonymousUser':
         current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
         for sc in current_shopcart:
@@ -24,6 +28,7 @@ def index(request):
     context = {'setting': setting, 'category': category,
                'shopcart': current_shopcart,
                'total': int(total), 'quantity': quantity,
+               'profile': profile,
                }
     return render(request, 'users/user_profile.html', context)
 
@@ -97,3 +102,45 @@ def register_func(request):
                'form':form,
                }
     return render(request, 'users/registration_form.html', context)
+
+
+from .forms import ProfileUpdateForm, UserUpdateForm
+@login_required(login_url='user/login')
+def update_profile(request):
+    setting = Setting.objects.filter(status=True).first()
+    category = Category.objects.all()
+    current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
+    total = 0
+    quantity = 0
+    current_user = request.user
+    profile = UserProfile.objects.get(user_id=current_user.id)
+
+    if request.user != 'AnonymousUser':
+        current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
+        for sc in current_shopcart:
+            total += sc.product.price * sc.quantity
+            quantity += sc.quantity
+
+    user_form = UserUpdateForm(instance = current_user)
+    profile_form = ProfileUpdateForm(instance=profile)
+    if request.method =='POST':
+        user_form = UserUpdateForm(request.POST,instance=current_user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
+        print(request.FILES, request.POST)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request,'Your profile was successfully updated!')
+            return HttpResponseRedirect('/user')
+
+    context = {'setting': setting, 'category': category,
+               'shopcart': current_shopcart,
+               'total': int(total), 'quantity': quantity,
+               'profile': profile,
+               'user_form':user_form,
+               'profile_form':profile_form,
+               }
+    return render(request, 'users/update_profile.html', context)
+
+def update_password(request):
+    return HttpResponse('Успех - пароль')

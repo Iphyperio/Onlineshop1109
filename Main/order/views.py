@@ -9,10 +9,11 @@ from home.models import Setting
 def index(request):
     return HttpResponse('Страница Order')
 
-@login_required(login_url='/login')
+@login_required(login_url='/user/login')
 def addtoshopcart(request,id):
     url = request.META.get('HTTP_REFERER')
     current_user = request.user
+    print(current_user)
     checkproduct = ShopCart.objects.filter(product_id=id, user_id=request.user.id)
 
     if checkproduct: control = 1 #товар в корзине
