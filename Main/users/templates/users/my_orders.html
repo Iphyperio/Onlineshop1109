@@ -1,0 +1,72 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% block title %} 9 Bit - my orders{% endblock %}
+
+{% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
+
+{% block content %}
+<!-- BREADCRUMB -->
+<div id="breadcrumb">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li class="active">My orders</li>
+        </ul>
+    </div>
+</div>
+<!-- /BREADCRUMB -->
+
+<!-- section -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="col-md-3">
+            {% include 'users/user_panel.html' %}
+        </div>
+        <div class="col-md-9">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+		    {% endif %}
+            <div class="section-title">
+                <h3 class="title"> My orders </h3>
+            </div>
+            <table class="shopping-cart-table table">
+                <thead>
+                    <tr>
+                        <th class="text-left"> ID </th>
+                        <th class="text-left"> First Name </th>
+                        <th class="text-left"> Last Name </th>
+                        <th class="text-left"> Total </th>
+                        <th class="text-left"> Status </th>
+                        <th class="text-left"> Date </th>
+                        <th class="text-left"> Details </th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                <tr>
+                     <td class="text-left"> {{ order.id }}</td>
+                     <td class="text-left"> {{ order.first_name }}</td>
+                     <td class="text-left"> {{ order.last_name }}</td>
+                     <td class="text-left"> {{ order.total }}</td>
+                     <td class="text-left"> {{ order.status }}</td>
+                     <td class="text-left"> {{ order.create_at }}</td>
+                     <td class="text-left"> <a class="primary-btn" href="/user/myorderdetail/{{ order.id }}">Details</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /section -->
+{% endblock %}
+{% block foot %}{% include 'home/footer.html' %}{% endblock %}

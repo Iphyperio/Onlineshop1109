@@ -61,7 +61,7 @@ def login_func(request):
             return HttpResponseRedirect('/')
         else:
             messages.warning(request,'Login error. Check username or password')
-            return HttpResponseRedirect('/users/login')
+            return HttpResponseRedirect('/user/login')
 
     return render(request, 'users/login_form.html', context)
 
@@ -142,5 +142,110 @@ def update_profile(request):
                }
     return render(request, 'users/update_profile.html', context)
 
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
+@login_required(login_url='user/login')
 def update_password(request):
-    return HttpResponse('Успех - пароль')
+    setting = Setting.objects.filter(status=True).first()
+    category = Category.objects.all()
+    current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
+    total = 0
+    quantity = 0
+    current_user = request.user
+    profile = UserProfile.objects.get(user_id=current_user.id)
+
+    if request.user != 'AnonymousUser':
+        current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
+        for sc in current_shopcart:
+            total += sc.product.price * sc.quantity
+            quantity += sc.quantity
+
+    form = PasswordChangeForm(current_user,request.POST)
+    if request.method =='POST':
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request,user)
+            messages.success(request,'Your password was successfully updated!')
+            return HttpResponseRedirect('/user')
+        else:
+            messages.error(request,'Please correct: <br>'+str(form.errors))
+            return HttpResponseRedirect('/user/password/')
+
+    context = {'setting': setting, 'category': category,
+               'shopcart': current_shopcart,
+               'total': int(total), 'quantity': quantity,
+               'profile': profile,
+               'password_form': form,
+               }
+    return render(request, 'users/update_password.html', context)
+
+from product.models import Product, Comment
+from order.models import Order, OrderProduct
+def my_orders(request):
+    setting = Setting.objects.filter(status=True).first()
+    category = Category.objects.all()
+    current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
+    total = 0
+    quantity = 0
+    current_user = request.user
+    profile = UserProfile.objects.get(user_id=current_user.id)
+
+    if request.user != 'AnonymousUser':
+        current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
+        for sc in current_shopcart:
+            total += sc.product.price * sc.quantity
+            quantity += sc.quantity
+
+    orders = Order.objects.filter(user_id = current_user.id)
+    context = {'setting': setting, 'category': category,
+               'shopcart': current_shopcart,
+               'total': int(total), 'quantity': quantity,
+               'profile': profile,
+               'orders': orders,
+               }
+    return render(request, 'users/my_orders.html', context)
+
+
+
+def my_order_detail(request,id):
+    setting = Setting.objects.filter(status=True).first()
+    category = Category.objects.all()
+    current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
+    total = 0
+    quantity = 0
+    current_user = request.user
+    profile = UserProfile.objects.get(user_id=current_user.id)
+
+    if request.user != 'AnonymousUser':
+        current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
+        for sc in current_shopcart:
+            total += sc.product.price * sc.quantity
+            quantity += sc.quantity
+
+    order = Order.objects.filter(user_id = current_user.id,id=id).first()
+    order_products = OrderProduct.objects.filter(order_id = id)
+
+
+    context = {'setting': setting, 'category': category,
+               'shopcart': current_shopcart,
+               'total': int(total), 'quantity': quantity,
+               'profile': profile,
+               'order': order,
+               'order_products': order_products
+               }
+    return render(request, 'users/my_order_details.html', context)
+
+
+
+def my_products(request):
+    return HttpResponse('my_products')
+def my_comments(request):
+    return HttpResponse('my_comments')
+def delete_comment(request):
+    return HttpResponse('delete_comment')
+
+
+
+

@@ -9,4 +9,9 @@ urlpatterns = [
     path('register/', views.register_func, name='register'),
     path('profile/',views.update_profile,name='update_profile'),
     path('password/', views.update_password, name='update_password'),
+    path('orders/', views.my_orders, name='my_orders'),
+    path('myorderdetail/<int:id>/', views.my_order_detail, name='my_order_detail'),
+    path('ordered_products/', views.my_products, name='my_products'),
+    path('comments/', views.my_comments, name='my_comments'),
+    path('deletecomment/<int:id>', views.delete_comment, name='delete_comment'),
 ]

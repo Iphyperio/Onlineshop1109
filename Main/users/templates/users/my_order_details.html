@@ -1,0 +1,117 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% block title %} 9 Bit - order details{% endblock %}
+
+{% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
+
+{% block content %}
+<!-- BREADCRUMB -->
+<div id="breadcrumb">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li class="active"> Order details</li>
+        </ul>
+    </div>
+</div>
+<!-- /BREADCRUMB -->
+
+<!-- section -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="col-md-3">
+            {% include 'users/user_panel.html' %}
+        </div>
+        <div class="col-md-9">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+		    {% endif %}
+            <div class="section-title">
+                <h3 class="title"> Order details </h3>
+            </div>
+                {{ order }}
+                <table class="shopping-cart-table table">
+                    <tr>
+                        <th class="text-left">Name Surname</th>
+                        <td class="text-left">{{ order.first_name }} {{ order.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-left">Phone</th>
+                        <td class="text-left">{{ order.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-left">Addres</th>
+                        <td class="text-left">{{ order.address }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-left">City</th>
+                        <td class="text-left">{{ order.city }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-left">Country</th>
+                        <td class="text-left">{{ order.country }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-left">Status</th>
+                        <td class="text-left">{{ order.status }}</td>
+                    </tr>
+
+                    <tr>
+                        <th class="text-left">Date</th>
+                        <td class="text-left">{{ order.create_at }}</td>
+                    </tr>
+                        <th class="text-left">Shipping Inf</th>
+                        <td class="text-left">{{ order.adminnote }}</td>
+                    </tr>
+                </table>
+
+                <div class="section-title">
+                    <h4 class="title">Order Item List</h4>
+                </div>
+
+                <table class="shopping-cart-table table">
+                    <tr>
+                        <th class="text-left">Id</th>
+                        <th class="text-left">Product Name</th>
+                        <th class="text-left">Price</th>
+                        <th class="text-left">Quantity</th>
+                        <th class="text-left">Amount</th>
+                        <th class="text-left">Status</th>
+                        <th class="text-left">Date</th>
+                    </tr>
+                    {% for oi in order_products %}
+                    <tr>
+                        <td class="text-left">
+                            <a href="/products/{{ oi.product_id }}/{{ oi.product.slug }}">
+                                {% if oi.variant.image_id > 0 %}
+                                <img src="{{ oi.variant.image }}" alt="" style="height: 50px">
+                                {% else %}
+                                <img src="{{ oi.product.image.url}}" alt="" style="height: 50px">
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td class="text-left">{{ oi.product.title }} {{ oi.variant.size }} {{ oi.variant.color }}</td>
+                        <td class="text-left">{{ oi.price }}</td>
+                        <td class="text-left">{{ oi.quantity }}</td>
+                        <td class="text-left">{{ oi.amount }}</td>
+                        <td class="text-left">{{ oi.status }}</td>
+                        <td class="text-left">{{ oi.create_at }}</td>
+                    </tr>
+                    {% endfor %}
+
+                </table>
+
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /section -->
+{% endblock %}
+{% block foot %}{% include 'home/footer.html' %}{% endblock %}
