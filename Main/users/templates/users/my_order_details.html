@@ -77,18 +77,18 @@
 
                 <table class="shopping-cart-table table">
                     <tr>
-                        <th class="text-left">Id</th>
+                        <th class="text-left"></th>
                         <th class="text-left">Product Name</th>
-                        <th class="text-left">Price</th>
-                        <th class="text-left">Quantity</th>
-                        <th class="text-left">Amount</th>
-                        <th class="text-left">Status</th>
-                        <th class="text-left">Date</th>
+                        <th class="text-center">Price</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-center">Amount</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Date</th>
                     </tr>
                     {% for oi in order_products %}
                     <tr>
                         <td class="text-left">
-                            <a href="/products/{{ oi.product_id }}/{{ oi.product.slug }}">
+                            <a href="/category/product/{{ oi.product_id }}/{{ oi.product.slug }}">
                                 {% if oi.variant.image_id > 0 %}
                                 <img src="{{ oi.variant.image }}" alt="" style="height: 50px">
                                 {% else %}
@@ -98,9 +98,9 @@
                         </td>
                         <td class="text-left">{{ oi.product.title }} {{ oi.variant.size }} {{ oi.variant.color }}</td>
                         <td class="text-left">{{ oi.price }}</td>
-                        <td class="text-left">{{ oi.quantity }}</td>
+                        <td class="text-center">{{ oi.quantity }}</td>
                         <td class="text-left">{{ oi.amount }}</td>
-                        <td class="text-left">{{ oi.status }}</td>
+                        <td class="text-center">{{ oi.status }}</td>
                         <td class="text-left">{{ oi.create_at }}</td>
                     </tr>
                     {% endfor %}

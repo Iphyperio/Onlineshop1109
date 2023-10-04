@@ -75,3 +75,13 @@ def add_comment(request, id):
                 messages.success(request,'Your review was created')
 
     return HttpResponseRedirect(url)
+
+
+from django.contrib.auth.decorators import login_required
+@login_required(login_url='/user/login')
+def delete_comment(request, id):
+    url = request.META.get('HTTP_REFERER')
+    current_user = request.user
+    Comment.objects.filter(id=id,user_id = current_user.id).delete()
+    messages.success(request,'Your comment was successfully deleted')
+    return HttpResponseRedirect(url)

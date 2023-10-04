@@ -1,0 +1,74 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% block title %} 9 Bit - my products{% endblock %}
+
+{% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
+
+{% block content %}
+<!-- BREADCRUMB -->
+<div id="breadcrumb">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li class="active">My products</li>
+        </ul>
+    </div>
+</div>
+<!-- /BREADCRUMB -->
+
+<!-- section -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="col-md-3">
+            {% include 'users/user_panel.html' %}
+        </div>
+        <div class="col-md-9">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+		    {% endif %}
+            <div class="section-title">
+                <h3 class="title"> My products </h3>
+            </div>
+            <table class="shopping-cart-table table">
+                <thead>
+                    <tr>
+                        <th class="text-left">  </th>
+                        <th class="text-left"> Product name </th>
+                        <th class="text-center"> Price </th>
+                        <th class="text-center"> Order </th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for my_product in my_products %}
+                <tr>
+                     <td class="text-left">
+                            <a href="/category/product/{{ my_product.product.id }}/{{ my_product.product.slug }}">
+                                {% if comment.product.variant.image_id > 0 %}
+                                <img src="{{ my_product.product.variant.image }}" alt="{{ my_product.product }}" style="height: 50px">
+                                {% else %}
+                                <img src="{{ my_product.product.image.url}}" alt="{{ my_product.product.image.url }}" style="height: 50px">
+                                {% endif %}
+                            </a>
+                        </td>
+                     <td class="text-left">  <a href="/category/product/{{ my_product.product.id }}/{{ my_product.product.slug }}">{{ my_product.product.title }}</a></td>
+                     <td class="text-center"> {{ my_product.product.price }} ₸</td>
+
+                      <td class="text-center"> <a class="primary-btn" href="/user/myorderdetail/{{ my_product.order.id }}">Order link</a></td>                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /section -->
+{% endblock %}
+{% block foot %}{% include 'home/footer.html' %}{% endblock %}
