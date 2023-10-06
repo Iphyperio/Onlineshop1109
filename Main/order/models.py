@@ -1,19 +1,24 @@
 from django.db import models
 from django.contrib.auth.models import User
-from product.models import Product
+from product.models import Product, Variants
 
 class ShopCart(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL, null = True)
     product = models.ForeignKey(Product,on_delete=models.SET_NULL, null = True)
     quantity = models.IntegerField()
+    variant = models.ForeignKey(Variants, on_delete=models.SET_NULL, null = True, blank=True)
 
     @property
     def price(self):
-        return self.product.price
+        if self.variant != None:
+            return self.variant.price
+        else:
+            return self.product.price
 
     @property
     def amount(self):
         return self.quantity * self.price
+
 
 
     def __str__(self):
@@ -61,6 +66,7 @@ class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    variant = models.ForeignKey(Variants, on_delete=models.CASCADE, null = True, blank=True)
     quantity = models.IntegerField()
     price = models.FloatField()
     amount = models.FloatField()

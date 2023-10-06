@@ -9,12 +9,6 @@ from order.models import ShopCart
 def index(request):
     return HttpResponse('<h1>Product page </h1>')
 
-
-
-
-
-
-
 def category_products(request,id,slug):
 
     setting = Setting.objects.filter(status=True).first()
@@ -44,7 +38,10 @@ def product_detail(request,id,slug):
     for sc in current_shopcart:
         total += sc.product.price * sc.quantity
         quantity += sc.quantity
+
+
     product = Product.objects.filter(id=id)[0]
+
     images = Images.objects.filter(product_id=id)
     comments = Comment.objects.filter(product_id=id)
     context = {'setting': setting, 'category': category,
@@ -53,7 +50,16 @@ def product_detail(request,id,slug):
                'total': int(total), 'quantity': quantity,
 
                }
-
+    sizes = []
+    colors = []
+    if product.variant != 'None':
+        variants = Variants.objects.filter(product_id=id)
+        for v in variants:
+            sizes.append(v.size)
+            colors.append(v.color)
+        sizes = set(sizes)
+        # print('Размеры:', sizes, 'цвета:',colors)
+        context.update({'sizes':sizes, 'variants': variants})
     return render(request,'product/product_detail.html',context)
 
 

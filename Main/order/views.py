@@ -13,17 +13,42 @@ def index(request):
 def addtoshopcart(request,id):
     url = request.META.get('HTTP_REFERER')
     current_user = request.user
-    print(current_user)
-    checkproduct = ShopCart.objects.filter(product_id=id, user_id=request.user.id)
+    product = Product.objects.filter(id = id).first()
+    print(request.POST)
+    if product.variant != 'None':
+        variantid = int(request.POST.get('cd-dropdown'))
+        print(variantid)
+        if variantid == 0:
+            messages.warning(request, 'Выберите конфигурацию!')
+            return HttpResponseRedirect(url)
+        #Проверяем что в корзине уже был такой вариант товара
+        checkvariant = ShopCart.objects.filter(product_id=id,variant_id=variantid,
+                                               user_id=current_user.id)
+        print(checkvariant)
+        if checkvariant:
+            print('Есть вариант')
+            control = 1 #если был то 1
+        else:
+            control = 0 # если нет - то 0
+    else: #товар не имеет конфигураций
+        checkproduct = ShopCart.objects.filter(product_id=id, user_id=request.user.id)
+        if checkproduct:
+            print('Есть товар')
+            control = 1  # товар в корзине
+        else:
+            control = 0  # товар не в корзине
 
-    if checkproduct: control = 1 #товар в корзине
-    else: control = 0            #товар не в корзине
 
     if request.method == "POST":
         form = ShopCartForm(request.POST)
         if form.is_valid():
+            variantid = request.POST.get('conf_select')
             if control == 1: #Обновляем корзину
-                data = ShopCart.objects.get(product_id=id, user_id=request.user.id)
+                if product.variant == 'None': #у товара нет конфигураций
+                    data = ShopCart.objects.get(product_id=id, user_id=request.user.id)
+                else:#у товара есть конфигурации
+                    data = ShopCart.objects.get(variant_id=id, product_id=id, user_id=request.user.id)
+
                 data.quantity += form.cleaned_data['quantity']
                 data.save()
                 messages.success(request, 'Корзина обновлена')
@@ -31,23 +56,30 @@ def addtoshopcart(request,id):
                 data=ShopCart()
                 data.user_id = current_user.id
                 data.product_id=id
+                print('ID ВАРИАНА!!!!!!!', variantid)
+                data.variant_id = variantid
                 data.quantity = form.cleaned_data['quantity']
                 data.save()
                 messages.success(request,'Товар добавлен в корзину')
         return HttpResponseRedirect(url)
     else: #если это не РОST запрос
-        if control ==1:
-            data= ShopCart.objects.get(product_id=id, user_id=request.user.id)
-            data.quantity +=1 #если еще раз ткнули добавить тот же товар
-            data.save()
-            messages.success(request, 'Корзина обновлена')
-        else:
-            data=ShopCart()
-            data.user_id=current_user.id
-            data.product_id=id
-            data.quantity=1 #только 1 товар
-            data.save()
-            messages.success(request,'Товар добавлен в корзину')
+        if product.variant == 'None': #если нет конфигураций - добавляем 1 штуку
+            if control ==1:
+                data= ShopCart.objects.get(product_id=id, user_id=request.user.id)
+                data.quantity +=1 #если еще раз ткнули добавить тот же товар
+                data.save()
+                messages.success(request, 'Корзина обновлена')
+            else:
+                data=ShopCart()
+                data.user_id=current_user.id
+                data.product_id=id
+                data.variant_id = None
+                data.quantity=1 #только 1 товар
+                data.save()
+                messages.success(request,'Товар добавлен в корзину')
+        else: #если конфигурации есть - делаем переадресацию на страницу товара
+            return HttpResponseRedirect(f'/category/product/{id}/{product.slug}/')
+
         return HttpResponseRedirect(url)
 
 

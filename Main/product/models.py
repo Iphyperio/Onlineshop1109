@@ -46,6 +46,13 @@ class Product(models.Model):
         ('False', 'False'),
     )
 
+    VARIANTS = (
+        ('None', 'None'),
+        ('Size', 'Size'),
+        ('Color', 'Color'),
+        ('Size-Color', 'Size-Color'),
+    )
+    variant = models.CharField(max_length=10, choices=VARIANTS, default='None')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=150)
     keywords = models.CharField(max_length=255)
@@ -79,6 +86,48 @@ class Product(models.Model):
             return round(float(av_rate),1)
         else:
             return 0.0
+
+class Size(models.Model):
+    name = models.CharField(max_length=20)
+    code = models.CharField(max_length=20, blank=True, null=True)
+    def __str__(self):
+        return self.name
+
+class Color(models.Model):
+    name = models.CharField(max_length=20)
+    code = models.CharField(max_length=20, blank=True, null=True)
+    def __str__(self):
+        return self.name
+    def color_tag(self):
+        return mark_safe(f'<p style="background-color:{self.code}">Color</p>')
+
+class Variants(models.Model):
+    title = models.CharField(max_length=100, blank=True, null=True)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    color = models.ForeignKey(Color,on_delete=models.SET_NULL,blank=True,null=True)
+    size = models.ForeignKey(Size,on_delete=models.SET_NULL,blank=True,null=True)
+    image_id = models.IntegerField(blank=True,null=True,default=0)
+    quantity = models.IntegerField(default=50)
+    price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+    def __str__(self):
+        return self.title
+
+
+    def image(self):
+        img = Images.objects.get(id=self.image_id)
+        if img.id is not None:
+            varimage = img.image.url
+        else:
+            varimage=""
+        return varimage
+
+    def image_tag(self):
+        if self.image:
+            return mark_safe(f'<img src="{self.image()}" width="auto" height="50"/>')
+        else:
+            return 'no image'
+
 
 class Images(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
