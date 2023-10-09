@@ -5,6 +5,8 @@ from .models import ShopCart, Order, OrderProduct
 from .forms import ShopCartForm
 from django.contrib.auth.decorators import login_required
 from home.models import Setting
+from product.models import Category, Product, Variants
+
 
 def index(request):
     return HttpResponse('Страница Order')
@@ -16,6 +18,7 @@ def addtoshopcart(request,id):
     product = Product.objects.filter(id = id).first()
     print(request.POST)
     if product.variant != 'None':
+        print('Товар:',product.title,'Есть варианты!')
         variantid = int(request.POST.get('cd-dropdown'))
         print(variantid)
         if variantid == 0:
@@ -24,7 +27,7 @@ def addtoshopcart(request,id):
         #Проверяем что в корзине уже был такой вариант товара
         checkvariant = ShopCart.objects.filter(product_id=id,variant_id=variantid,
                                                user_id=current_user.id)
-        print(checkvariant)
+        print('В корзине уже:',checkvariant)
         if checkvariant:
             print('Есть вариант')
             control = 1 #если был то 1
@@ -42,12 +45,16 @@ def addtoshopcart(request,id):
     if request.method == "POST":
         form = ShopCartForm(request.POST)
         if form.is_valid():
-            variantid = request.POST.get('conf_select')
+            # !!!! поправил ключ для вытаскивания ID из запроса
+            variantid = request.POST.get('cd-dropdown')
+            print('РОСТ запрос', variantid)
             if control == 1: #Обновляем корзину
                 if product.variant == 'None': #у товара нет конфигураций
                     data = ShopCart.objects.get(product_id=id, user_id=request.user.id)
                 else:#у товара есть конфигурации
-                    data = ShopCart.objects.get(variant_id=id, product_id=id, user_id=request.user.id)
+                    #!!!! поправил Variant_id = variantid
+                    data = ShopCart.objects.get(variant_id=variantid, product_id=id, user_id=request.user.id)
+                    print('Конфигурации:',data)
 
                 data.quantity += form.cleaned_data['quantity']
                 data.save()
@@ -83,7 +90,7 @@ def addtoshopcart(request,id):
         return HttpResponseRedirect(url)
 
 
-from product.models import Category, Product
+
 def shopcart(request):
     setting = Setting.objects.filter(status=True).first()
     category = Category.objects.all()
@@ -91,7 +98,10 @@ def shopcart(request):
     total = 0
     quantity = 0
     for sc in current_shopcart:
-        total += sc.product.price * sc.quantity
+        if sc.variant != None:
+            total += sc.variant.price * sc.quantity
+        else:
+            total += sc.product.price * sc.quantity
         quantity += sc.quantity
 
     context = {'setting': setting, 'category': category,
@@ -116,14 +126,16 @@ def checkout(request):
     total = 0
     quantity = 0
     for sc in shopcart:
-        total += sc.product.price * sc.quantity
+        if sc.variant != None:
+            total += sc.variant.price * sc.quantity
+        else:
+            total += sc.product.price * sc.quantity
         quantity += sc.quantity
 
     profile = UserProfile.objects.get(user_id=current_user.id)
 
 
     if request.method == 'POST':
-        print('ПОСТ ЗАПРОС')
         form = OrderForm(request.POST)
         if form.is_valid():
             #Не забудьте проверить информацию о кредитной карте пользователя и возможности оплаты
@@ -152,12 +164,22 @@ def checkout(request):
                 detail.product_id = s.product_id #ID Товара
                 detail.user_id = current_user.id #ID пользователя
                 detail.quantity = s.quantity #количество
-                detail.price = s.product.price #цена
+                detail.variant = s.variant
+                if s.variant_id != None:
+                    detail.price = s.variant.price #цена
+                else:
+                    detail.price = s.product.price  # цена
                 detail.amount = s.amount #итоговая сумма по этому товару
+
                 detail.save()
-                product = Product.objects.get(id=s.product_id)
-                product.amount -= s.quantity  # Уменьшаем количество товара
-                product.save() #сохраняем заказ в БД
+                if s.variant_id != None:
+                    variants = Variants.objects.filter(id=s.variant_id).first()
+                    variants.quantity -= s.quantity
+                    variants.save()
+                else:
+                    product = Product.objects.get(id=s.product_id)
+                    product.amount -= s.quantity  # Уменьшаем количество товара
+                    product.save() #сохраняем заказ в БД
 
             # очищаем корзину после формирования заказа - удаляем из БД
             ShopCart.objects.filter(user_id=current_user.id).delete()

@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import ShopCart
 
 class ShopCartAdmin(admin.ModelAdmin):
-    list_display = ['product','user','quantity','price','amount']
+    list_display = ['product_info','user','quantity','price','amount']
     list_filter = ['product','user']
 
 from .models import ShopCart, Order, OrderProduct

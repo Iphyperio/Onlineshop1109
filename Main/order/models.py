@@ -19,7 +19,12 @@ class ShopCart(models.Model):
     def amount(self):
         return self.quantity * self.price
 
-
+    @property
+    def product_info(self):
+        if self.variant == None:
+            return self.product.title
+        else:
+            return self.variant
 
     def __str__(self):
         return f'<Shopcart. User: {self.user}, product:{self.product}:{self.quantity}>'
