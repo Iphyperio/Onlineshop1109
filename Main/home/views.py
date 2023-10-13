@@ -4,6 +4,36 @@ from django.contrib import messages
 from product.models import Category, Product
 
 from order.models import ShopCart
+from users.models import UserProfile
+
+def selectcurrency(request):
+    url = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+        request.session['currency'] = request.POST['currency']
+        userprofile = UserProfile.objects.get(user_id=request.user.id)
+        userprofile.currency_id = request.session['currency']
+        userprofile.save()
+        return HttpResponseRedirect(url)
+
+from django.utils import translation
+from django.conf import settings
+
+def selectlanguage(request):
+    print('ПУТЬ К ЛОКАЛЯМ', settings.LOCALE_PATHS)
+    url = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+        current_language = translation.get_language()
+        lang = request.POST.get('language')
+        translation.activate(lang)
+
+        # request.session[LANGUAGE_SESSION_KEY] = lang
+        # userprofile = UserProfile.objects.get(user_id=request.user.id)
+        # userprofile.currency_id = request.session['currency']
+        # userprofile.save()
+        response = HttpResponse('')
+        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+        return HttpResponseRedirect('/'+lang+'/'+url[25:])
+
 def index(request):
     setting = Setting.objects.filter(status=True).first()
     category = Category.objects.all()
@@ -11,7 +41,10 @@ def index(request):
     total = 0
     quantity = 0
     for sc in current_shopcart:
-        total += sc.product.price * sc.quantity
+        if sc.variant != None:
+            total += sc.variant.price * sc.quantity
+        else:
+            total += sc.product.price * sc.quantity
         quantity += sc.quantity
 
     product_slider = Product.objects.order_by('id').all()[:3]
@@ -34,7 +67,10 @@ def contacts(request):
     total = 0
     quantity = 0
     for sc in current_shopcart:
-        total += sc.product.price * sc.quantity
+        if sc.variant != None:
+            total += sc.variant.price * sc.quantity
+        else:
+            total += sc.product.price * sc.quantity
         quantity += sc.quantity
 
 
@@ -66,7 +102,10 @@ def aboutus(request):
     total = 0
     quantity = 0
     for sc in current_shopcart:
-        total += sc.product.price * sc.quantity
+        if sc.variant != None:
+            total += sc.variant.price * sc.quantity
+        else:
+            total += sc.product.price * sc.quantity
         quantity += sc.quantity
 
     context = {'setting':setting, 'category':category,
@@ -82,8 +121,12 @@ def search(request):
     current_shopcart = ShopCart.objects.filter(user_id=request.user.id)
     total = 0
     quantity = 0
+
     for sc in current_shopcart:
-        total += sc.product.price * sc.quantity
+        if sc.variant != None:
+            total += sc.variant.price * sc.quantity
+        else:
+            total += sc.product.price * sc.quantity
         quantity += sc.quantity
 
     if request.method == 'POST':

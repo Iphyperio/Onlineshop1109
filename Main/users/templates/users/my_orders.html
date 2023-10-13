@@ -1,7 +1,7 @@
 {% extends 'home/layout.html' %}
 {% load static %}
 {% block title %} 9 Bit - my orders{% endblock %}
-
+{% load currency %}
 {% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
 
 {% block content %}
@@ -53,7 +53,7 @@
                      <td class="text-left"> {{ order.id }}</td>
                      <td class="text-left"> {{ order.first_name }}</td>
                      <td class="text-left"> {{ order.last_name }}</td>
-                     <td class="text-left"> {{ order.total }}</td>
+                     <td class="text-left"> {{ order.total|currency:request.session.currency }} {{ request.session.currency }}</td>
                      <td class="text-left"> {{ order.status }}</td>
                      <td class="text-left"> {{ order.create_at }}</td>
                      <td class="text-left"> <a class="primary-btn" href="/user/myorderdetail/{{ order.id }}">Details</a></td>

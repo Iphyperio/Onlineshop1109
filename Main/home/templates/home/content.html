@@ -1,4 +1,6 @@
 {% load static %}
+{% load currency %}
+
 <!-- section -->
 	<div class="section">
 		<!-- container -->
@@ -72,7 +74,8 @@
 							<img src="{{ product.image.url }}" alt="" style="height:300px; width:auto;">
 						</div>
 						<div class="product-body">
-							<h3 class="product-price"> {{ product.price }}₸</h3>
+
+							<h3 class="product-price"> {{ product.price|currency:request.session.currency }} {{ request.session.currency }}</h3>
 							{% if product.average_rating != 0 %}
 							<div class="product-rating">
                                     <i class="fa fa-star{% if product.average_rating < 1 %}-o empty{% endif %}"></i>

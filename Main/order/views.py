@@ -1,3 +1,4 @@
+
 from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib import messages
@@ -16,20 +17,19 @@ def addtoshopcart(request,id):
     url = request.META.get('HTTP_REFERER')
     current_user = request.user
     product = Product.objects.filter(id = id).first()
-    print(request.POST)
+
     if product.variant != 'None':
-        print('Товар:',product.title,'Есть варианты!')
-        variantid = int(request.POST.get('cd-dropdown'))
-        print(variantid)
-        if variantid == 0:
+        variantid = request.POST.get('cd-dropdown')
+        if variantid == None:#пересылка на страницу товара
+            return HttpResponseRedirect(f'/category/product/{id}/{product.slug}/')
+        if variantid == '0':
             messages.warning(request, 'Выберите конфигурацию!')
             return HttpResponseRedirect(url)
+        variantid = int(variantid)
         #Проверяем что в корзине уже был такой вариант товара
         checkvariant = ShopCart.objects.filter(product_id=id,variant_id=variantid,
                                                user_id=current_user.id)
-        print('В корзине уже:',checkvariant)
         if checkvariant:
-            print('Есть вариант')
             control = 1 #если был то 1
         else:
             control = 0 # если нет - то 0

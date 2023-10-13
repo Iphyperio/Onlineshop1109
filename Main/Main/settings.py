@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'modeltranslation',
+    'currencies',
     'users',
     'order',
     'mptt',
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -68,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'currencies.context_processors.currencies',
             ],
         },
     },
@@ -109,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+
 
 TIME_ZONE = 'UTC'
 
@@ -159,3 +163,18 @@ CKEDITOR_CONFIGS = {
 }
 
 ###################################
+
+DEFAULT_CURRENCY = 'KZT'
+
+LANGUAGES =[
+    ('kk',('Kazakh')),
+    ('en',('Enlgish')),
+    ('ru',('Russian')),
+]
+LANGUAGE_CODE = 'en-us'
+LOCALE_PATHS= [os.path.join(BASE_DIR,'locale')]
+
+#('C:\\Users\\Администратор\\PycharmProjects\\KnewIT\\Onlineshop1109\\Main\\locale',)
+
+MODELTRANSLATION_DEFAULT_LANGUAGE='en'
+MODELTRANSLATION_PREPOLUTED_LANGUAGE='en'

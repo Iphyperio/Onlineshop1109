@@ -1,7 +1,7 @@
 {% extends 'home/layout.html' %}
 {% load static %}
 {% block title %} 9 Bit - my products{% endblock %}
-
+{% load currency %}
 {% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
 
 {% block content %}
@@ -47,19 +47,30 @@
                 <tbody>
                 {% for my_product in my_products %}
                 <tr>
-                     <td class="text-left">
-                            <a href="/category/product/{{ my_product.product.id }}/{{ my_product.product.slug }}">
-                                {% if comment.product.variant.image_id > 0 %}
-                                <img src="{{ my_product.product.variant.image }}" alt="{{ my_product.product }}" style="height: 50px">
-                                {% else %}
-                                <img src="{{ my_product.product.image.url}}" alt="{{ my_product.product.image.url }}" style="height: 50px">
-                                {% endif %}
-                            </a>
-                        </td>
-                     <td class="text-left">  <a href="/category/product/{{ my_product.product.id }}/{{ my_product.product.slug }}">{{ my_product.product.title }}</a></td>
-                     <td class="text-center"> {{ my_product.product.price }} ₸</td>
 
-                      <td class="text-center"> <a class="primary-btn" href="/user/myorderdetail/{{ my_product.order.id }}">Order link</a></td>                </tr>
+                         {% if my_product.variant != None %}
+                           <td class="thumb">
+                            <a href="/category/product/{{ my_product.product.id }}/{{ my_product.product.slug }}">
+                                <img src="{{ my_product.variant.image }}" alt="" style="height:50px;">
+                            </a>
+                            </td>
+                            <td class="details">
+                                <a href="/category/product/{{ my_product.product.id }}/{{ my_product.product.slug }}">{{ my_product.variant.title }}</a>
+                            </td>
+                            <td class="text-center"><strong>{{ my_product.variant.price|currency:request.session.currency }} {{ request.session.currency }}</strong><br><del class="font-weak"><small>{{ my_product.variant.price|add:50000 }} {{ request.session.currency }}</small></del></td>
+                        {% else %}
+                         <td class="thumb"><img src="{{ my_product.product.image.url }}" alt=""></td>
+                            <td class="details">
+                                <a href="/category/product/{{ my_product.product.id }}/{{ my_product.product.slug }}">{{ my_product.product.title }}</a>
+                            </td>
+                          <td class="text-center"><strong>{{ my_product.product.price|currency:request.session.currency }} {{ request.session.currency }}</strong><br><del class="font-weak"><small>{{ my_product.product.price|currency:request.session.currency|add:100 }} {{ request.session.currency }}</small></del></td>
+
+                        {% endif %}
+
+                     <td class="text-center"> {{ my_product.product.price|currency:request.session.currency }} {{ request.session.currency }}</td>
+
+                      <td class="text-center"> <a class="primary-btn" href="/user/myorderdetail/{{ my_product.order.id }}">Order link</a></td>
+                </tr>
                 {% endfor %}
                 </tbody>
             </table>
@@ -72,3 +83,6 @@
 <!-- /section -->
 {% endblock %}
 {% block foot %}{% include 'home/footer.html' %}{% endblock %}
+
+
+

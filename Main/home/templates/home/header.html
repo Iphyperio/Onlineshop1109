@@ -1,5 +1,7 @@
 {% load static %}
 {% load mptt_tags %}
+{% load currency %}
+{% load i18n %}
 <!-- jQuery !-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"> </script>
 <!-- jQuery UI !-->
@@ -29,28 +31,41 @@
 		<div id="top-header">
 			<div class="container">
 				<div class="pull-left">
-					<span> Welcome to {{ setting.company }}! </span>
+					<span> {% trans 'Welcome to' %} {{ setting.company }}! </span>
 				</div>
 				<div class="pull-right">
 					<ul class="header-top-links">
-						<li><a href="#">Store</a></li>
-						<li><a href="#">Newsletter</a></li>
-						<li><a href="#">FAQ</a></li>
+						<li><a href="#">{% trans 'Store' %}</a></li>
+						<li><a href="#">{% trans 'Newsletter' %}</a></li>
+						<li><a href="#">{% trans 'FAQ' %}</a></li>
+						{% load i18n %}
 						<li class="dropdown default-dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">ENG <i class="fa fa-caret-down"></i></a>
-							<ul class="custom-menu">
-								<li><a href="#">English (ENG)</a></li>
-								<li><a href="#">Russian (Ru)</a></li>
-								<li><a href="#">French (FR)</a></li>
-								<li><a href="#">Spanish (Es)</a></li>
-							</ul>
+							<form action="{% url 'selectlanguage' %}" method="POST">
+								{% csrf_token %}
+								<select name="language" onchange="submit()">
+									{% get_current_language as LANGUAGE_CODE %}
+									{% get_available_languages as LANGUAGES %}
+									{% get_language_info_list for LANGUAGES as languages %}
+									{% for language in languages %}
+									<option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected {% endif %}>
+										{{ language.name_local }} ({{ language.code }} )
+									</option>
+									{% endfor %}
+								</select>
+							</form>
+
 						</li>
 						<li class="dropdown default-dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">USD <i class="fa fa-caret-down"></i></a>
-							<ul class="custom-menu">
-								<li><a href="#">USD ($)</a></li>
-								<li><a href="#">EUR (€)</a></li>
-							</ul>
+							<form id="currency_switcher" method="POST" action="{% url 'selectcurrency' %}">
+								{% csrf_token %}
+								<select name="currency" onchange="submit()" >
+									{% for currency in CURRENCIES %}
+										<option value="{{ currency.code }}" {% if currency.code == request.session.currency %} selected="selected" {% endif %}>
+											{{ currency.symbol }} {{ currency.name}}
+										</option>
+									{% endfor %}
+								</select>
+							</form>
 						</li>
 					</ul>
 				</div>
@@ -116,8 +131,10 @@
 									<i class="fa fa-shopping-cart"></i>
 									<span class="qty"> {{ quantity }}</span>
 								</div>
+
+
 								<strong class="text-uppercase">My Cart:</strong>
-								<span> {{ total }} ₸</span>
+								<span> {{ total|currency:request.session.currency }} {{ request.session.currency }}</span>
 							</a>
 							<div class="custom-menu">
 								<div id="shopping-cart">

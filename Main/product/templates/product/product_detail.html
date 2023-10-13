@@ -1,5 +1,7 @@
 {% extends 'home/layout.html' %}
 {% load static %}
+{% load currency %}
+
 {% block title %} 9 Bit - {{ product.title }}{% endblock %}
 
 {% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
@@ -97,8 +99,8 @@
                                     <p><strong>Availability:</strong> {% if c.quantity > 0 %} In Stock {% else %} Out of
                                         stock {% endif %}</p>
                                     <p><strong>Selected: </strong> Size: {{ c.size }} Color: {{ c.color }}</p>
-                                    <h3 class="product-price"> {{ c.price }}₸
-                                        <del class="product-old-price">{{ c.price|add:50000 }}₸</del>
+                                    <h3 class="product-price"> {{ c.price|currency:request.session.currency }} {{ request.session.currency }}
+                                        <del class="product-old-price">{{ c.price|currency:request.session.currency|add:100 }} {{ request.session.currency }}</del>
                                     </h3>
                                     <img src="{{ c.image }}" id="{{ c.color }}" style="height: 200px;">
                                 </div>
@@ -127,8 +129,8 @@
                                 <p><strong>Availability:</strong> {% if c.quantity > 0 %} In Stock {% else %} Out of
                                     stock {% endif %}</p>
                                 <p><strong>Selected: </strong> Size: {{ c.size }} </p>
-                                <h3 class="product-price"> {{ c.price }}₸
-                                    <del class="product-old-price">{{ c.price|add:50000 }}₸</del>
+                                <h3 class="product-price"> {{ c.price|currency:request.session.currency}} {{ request.session.currency }}
+                                    <del class="product-old-price">{{ c.price|currency:request.session.currency|add:100 }} {{ request.session.currency }}</del>
                                 </h3>
                                 <img src="{{ c.image }}" id="{{ c.size }}" style="height: 200px;">
                             </div>
@@ -147,7 +149,7 @@
                             <select id="conf_select" name="cd-dropdown">
                                 <option value="0" selected> Choose Color</option>
                                 {% for c in variants %}
-                                <option value="{{ forloop.counter }}">{{ c.color }}</option>
+                                <option value="{{ forloop.counter }}">{{ c.price|currency:request.session.currency|add:100 }} {{ request.session.currency }}</option>
                                 {% endfor %}
                             </select>
                             {% for c in variants %}
@@ -155,7 +157,7 @@
                                 <p><strong>Availability:</strong> {% if c.quantity > 0 %} In Stock {% else %} Out of
                                     stock {% endif %}</p>
                                 <p><strong>Selected: </strong> Color: {{ c.color }} </p>
-                                <h3 class="product-price"> {{ c.price }}₸
+                                <h3 class="product-price"> {{ c.price|currency:request.session.currency}} {{ request.session.currency }}
                                     <del class="product-old-price">{{ c.price|add:50000 }}₸</del>
                                 </h3>
                                 <img src="{{ c.image }}" id="{{ c.color }}" style="height: 200px;">
@@ -175,8 +177,8 @@
 
                     <p><strong>Availability:</strong> {% if product.quantity > 0 %} In Stock {% else %} Out of
                         stock {% endif %}</p>
-                    <h3 class="product-price"> {{ product.price }}₸
-                        <del class="product-old-price">{{ product.price|add:50000 }}₸</del>
+                    <h3 class="product-price"> {{ product.price|currency:request.session.currency }} {{ request.session.currency }}
+                        <del class="product-old-price">{{ product.price|currency:request.session.currency|add:100 }} {{ request.session.currency }}</del>
                     </h3>
 
 

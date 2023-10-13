@@ -17,7 +17,10 @@ def category_products(request,id,slug):
     total = 0
     quantity = 0
     for sc in current_shopcart:
-        total += sc.product.price * sc.quantity
+        if sc.variant != None:
+            total += sc.variant.price * sc.quantity
+        else:
+            total += sc.product.price * sc.quantity
         quantity += sc.quantity
 
     products = Product.objects.filter(category_id=id)
@@ -36,7 +39,10 @@ def product_detail(request,id,slug):
     total = 0
     quantity = 0
     for sc in current_shopcart:
-        total += sc.product.price * sc.quantity
+        if sc.variant != None:
+            total += sc.variant.price * sc.quantity
+        else:
+            total += sc.product.price * sc.quantity
         quantity += sc.quantity
 
 

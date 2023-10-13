@@ -1,5 +1,6 @@
 {% extends 'home/layout.html' %}
 {% load static %}
+{% load currency %}
 {% block title %} 9 Bit - 			{% for product in products %}
 										{% if forloop.counter < 2 %}
 											{{ product.category }}
@@ -177,7 +178,7 @@
 											<td class="details">
 												<a href="/category/product/{{ product.id }}/{{ product.slug }}">{{ product.title }}</a>
 											</td>
-											<td class="price text-center"><strong> {{ product.price }}₸</strong><br><del class="font-weak"><small>{{ product.price|add:50000 }}₸</small></del></td>
+											<td class="price text-center"><strong> {{ product.price|currency:request.session.currency }} {{ request.session.currency }}</strong><br><del class="font-weak"><small>{{ product.price|currency:request.session.currency|add:100 }} {{ request.session.currency }} </small></del></td>
 											<td class="qty text-center"><input class="input" type="number" value="1"></td>
 											<td class="text-right"><a class="primary-btn" href="/order/addtoshopcart/{{ product.id }}" ><i class="fa fa-shopping-cart"> </i></a></td>
 										</tr>

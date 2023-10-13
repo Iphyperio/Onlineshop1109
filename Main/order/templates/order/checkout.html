@@ -1,5 +1,6 @@
 {% extends 'home/layout.html' %}
 {% load static %}
+{% load currency %}
 {% block title %} 9 Bit - Order summary{% endblock %}
 
 {% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
@@ -157,16 +158,17 @@
                                     <td class="details">
                                         <a href="/category/product/{{ s.product.id }}/{{ s.product.slug }}">{{ s.variant.title }}</a>
                                     </td>
-                                        <td class="price text-center"><strong>{{ s.variant.price }}₸</strong><br><del class="font-weak"><small>{{ s.variant.price|add:50000 }}</small></del></td>
+
+                                        <td class="price text-center"><strong>{{ s.variant.price|currency:request.session.currency }} {{ request.session.currency }}</strong><br><del class="font-weak"><small>{{ s.variant.price|currency:request.session.currency|add:100 }} {{ request.session.currency }} </small></del></td>
                                     {% else %}
                                         <td class="thumb"><img src="{{ s.product.image.url }}" alt=""></td>
                                         <td class="details">
                                             <a href="/category/product/{{ s.product.id }}/{{ s.product.slug }}">{{ s.product.title }}</a>
                                         </td>
-                                      <td class="price text-center"><strong>{{ s.product.price }}₸</strong><br><del class="font-weak"><small>{{ s.product.price|add:50000 }}</small></del></td>
+                                      <td class="price text-center"><strong>{{ s.product.price|currency:request.session.currency }} {{ request.session.currency }}</strong><br><del class="font-weak"><small>{{ s.product.price|currency:request.session.currency|add:100 }} {{ request.session.currency }} </small></del></td>
                                 {% endif %}
                                 <td class="qty text-center"><strong>{{ s.quantity }}</strong></td>
-                                <td class="total text-center"><strong class="primary-color"> {{ s.amount }} ₸</strong>
+                                <td class="total text-center"><strong class="primary-color"> {{ s.amount|currency:request.session.currency }} {{ request.session.currency }}</strong>
                                 </td>
 
                             </tr>
@@ -176,7 +178,7 @@
                             <tr>
                                 <th class="empty" colspan="3"></th>
                                 <th>TOTAL</th>
-                                <th colspan="2" class="total"> {{ total }}₸</th>
+                                <th colspan="2" class="total"> {{ total|currency:request.session.currency }} {{ request.session.currency }}</th>
                             </tr>
                             </tfoot>
                         </table>

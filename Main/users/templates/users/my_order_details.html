@@ -1,7 +1,7 @@
 {% extends 'home/layout.html' %}
 {% load static %}
 {% block title %} 9 Bit - order details{% endblock %}
-
+{% load currency %}
 {% block sidebar %}{% include 'home/sidebar.html' %}{% endblock %}
 
 {% block content %}
@@ -97,9 +97,9 @@
                             </a>
                         </td>
                         <td class="text-left">{{ oi.product.title }} {{ oi.variant.size }} {{ oi.variant.color }}</td>
-                        <td class="text-left">{{ oi.price }}</td>
+                        <td class="text-left">{{ oi.price|currency:request.session.currency }} {{ request.session.currency }}</td>
                         <td class="text-center">{{ oi.quantity }}</td>
-                        <td class="text-left">{{ oi.amount }}</td>
+                        <td class="text-left">{{ oi.amount|currency:request.session.currency }} {{ request.session.currency }}</td>
                         <td class="text-center">{{ oi.status }}</td>
                         <td class="text-left">{{ oi.create_at }}</td>
                     </tr>
